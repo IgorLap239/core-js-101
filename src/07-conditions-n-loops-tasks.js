@@ -137,8 +137,8 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  return ((rect2.top - rect1.top) < rect1.height) && ((rect2.left - rect1.left) < rect1.width);
 }
 
 
@@ -499,8 +499,11 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const iS = (m) => m.every((el, i) => el[i] === 1 && el.reduce((acc, it) => acc + it, 0) === 1);
+  if (iS(m1)) return m2;
+  if (iS(m2)) return m1;
+  return [[[...Array(m2.length)].reduce((acc, _, ind) => acc + (m1[0][ind] * m2[ind][0]), 0)]];
 }
 
 
@@ -534,8 +537,26 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const length = Math.max(...position.map((el) => el.length));
+  const pos = position.map((el) => {
+    if (el.length < length) {
+      return [...Array(length)].map((item, index) => (el[index] ? el[index] : undefined));
+    }
+    return el;
+  });
+  const checkDiagMain = (val) => pos.every((el, i) => el[i] === val);
+  const checkDiagSecond = (val) => pos.every((el, i) => el[el.length - 1 - i] === val);
+  const checkLine = (val) => pos.some((el) => el.every((item) => item === val));
+  const checkHeight = (val, poss) => pos.every((el) => el[poss] === val);
+  if (checkDiagMain('X') || checkDiagSecond('X')) return 'X';
+
+  if (checkDiagMain('0') || checkDiagSecond('0')) return '0';
+  if (checkLine('X')) return 'X';
+  if (checkLine('0')) return '0';
+  if (checkHeight('X', 0) || checkHeight('X', 1) || checkHeight('X', 2)) return 'X';
+  if (checkHeight('0', 0) || checkHeight('0', 1) || checkHeight('0', 2)) return '0';
+  return undefined;
 }
 
 
